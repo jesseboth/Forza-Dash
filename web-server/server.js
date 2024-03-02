@@ -61,7 +61,9 @@ const server = http.createServer((req, res) => {
         if(telemetry == null){
             telemetryType = "motorsport"
             dash = "forza-dash"
-            telemetry = spawn('../telemetry/fdt', ['-game', req.url.substring(1), '-j'], options);
+
+            // for future changes, -o shortens packet - values in optimized.go
+            telemetry = spawn('../telemetry/fdt', ['-game', req.url.substring(1), '-j', '-o'], options);
             retVal.success = true;
         }
         
@@ -74,7 +76,9 @@ const server = http.createServer((req, res) => {
         if(telemetry == null){
             telemetryType = "horizon"
             dash = "forza-dash"
-            telemetry = spawn('../telemetry/fdt', ['-game', req.url.substring(1), '-j'], options);
+
+            // for future changes, -o shortens packet - values in optimized.go
+            telemetry = spawn('../telemetry/fdt', ['-game', req.url.substring(1), '-j', '-o'], options);
             retVal.success = true;
         }
 

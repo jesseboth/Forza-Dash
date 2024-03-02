@@ -8,7 +8,6 @@ import (
 
 const jsonServerPort = ":8888"
 
-
 func responder(w http.ResponseWriter, r *http.Request) {
 
         switch r.Method {
@@ -23,8 +22,6 @@ func responder(w http.ResponseWriter, r *http.Request) {
 
 func serveJSON() {
         http.HandleFunc("/telemetry", responder)
-
-        log.Printf("JSON Telemetry Server started at http://localhost%s", jsonServerPort)
         log.Fatal(http.ListenAndServe(jsonServerPort, nil))
 }
 

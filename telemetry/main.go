@@ -59,20 +59,50 @@ func readForzaData(conn *net.UDPConn, telemArray []Telemetry) {
 			log.Printf("Data chunk %d: %v (%s) (%s)", i, data, T.name, T.dataType)
 		}
 
-		switch T.dataType {
-		case "s32":
-			s32map[T.name] = binary.LittleEndian.Uint32(data)
-		case "u32":
-			u32map[T.name] = binary.LittleEndian.Uint32(data)
-		case "f32":
-			dataFloated := Float32frombytes(data)
-			f32map[T.name] = dataFloated
-		case "u16":
-			u16map[T.name] = binary.LittleEndian.Uint16(data)
-		case "u8":
-			u8map[T.name] = uint8(data[0])
-		case "s8":
-			s8map[T.name] = int8(data[0])
+		if isFlagPassed("o") == true {
+			switch T.dataType {
+			case "s32":
+					if _, ok := requireds32[T.name]; ok && requireds32[T.name] {
+							s32map[T.name] = binary.LittleEndian.Uint32(data)
+					}
+			case "u32":
+					if _, ok := requiredu32[T.name]; ok && requiredu32[T.name] {
+							u32map[T.name] = binary.LittleEndian.Uint32(data)
+					}
+			case "f32":
+					if _, ok := requiredf32[T.name]; ok && requiredf32[T.name] {
+							dataFloated := Float32frombytes(data)
+							f32map[T.name] = dataFloated
+					}
+			case "u16":
+					if _, ok := requiredu16[T.name]; ok && requiredu16[T.name] {
+							u16map[T.name] = binary.LittleEndian.Uint16(data)
+					}
+			case "u8":
+					if _, ok := requiredu8[T.name]; ok && requiredu8[T.name] {
+							u8map[T.name] = uint8(data[0])
+					}
+			case "s8":
+					if _, ok := requireds8[T.name]; ok && requireds8[T.name] {
+							s8map[T.name] = int8(data[0])
+					}
+			}			
+		} else {
+			switch T.dataType {
+			case "s32":
+				s32map[T.name] = binary.LittleEndian.Uint32(data)
+			case "u32":
+				u32map[T.name] = binary.LittleEndian.Uint32(data)
+			case "f32":
+				dataFloated := Float32frombytes(data)
+				f32map[T.name] = dataFloated
+			case "u16":
+				u16map[T.name] = binary.LittleEndian.Uint16(data)
+			case "u8":
+				u8map[T.name] = uint8(data[0])
+			case "s8":
+				s8map[T.name] = int8(data[0])
+			}
 		}
 	}
 
@@ -138,9 +168,9 @@ func readForzaData(conn *net.UDPConn, telemArray []Telemetry) {
 
 		}
 
+		
 		jsonData = fmt.Sprintf("%s", jd)
-
-	} 
+		} 
 }
 
 func main() {
@@ -148,6 +178,7 @@ func main() {
 
 	flag.StringVar(&game, "game", "FM", "Specify an abreviated game ie: FM, FH5")
 	jsonPTR := flag.Bool("j", true, "Enables JSON HTTP server on port 8888")
+	flag.Bool("o", true, "Enables JSON HTTP server on port 8888")
 	debugModePTR := flag.Bool("d", false, "Enables extra debug information if set")
 	flag.Parse()
 
